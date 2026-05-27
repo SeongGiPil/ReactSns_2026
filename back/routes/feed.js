@@ -36,4 +36,35 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
+router.delete('/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  let connection;
+
+  try {
+    connection = await db.getConnection();
+
+    const result = await connection.execute(
+      `
+        DELETE FROM TBL_FEED_WHERE ID=:feedID
+      `,
+      [feedId],
+      {autoCommit:true}
+    );
+
+    res.json({
+      result: "success",
+      message:'삭제됨'
+    });
+
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  } finally {
+    if (connection) {
+      await connection.close();
+    }
+  }
+});
+
 module.exports = router;
