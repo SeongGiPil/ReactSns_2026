@@ -72,10 +72,10 @@ function Feed() {
     }
   };
 
-  function handleGetFeed(){
+  function handleGetFeed() {
     // 현재 로그인한 사용자의 피드목록 가져오기
     const token = localStorage.getItem("token");
-    if(token){
+    if (token) {
       const decoded = jwtDecode(token);
       console.log(decoded.userId);
       fetch("http://localhost:3010/feed/" + decoded.userId)
@@ -87,7 +87,7 @@ function Feed() {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     handleGetFeed();
   }, [])
 
@@ -165,7 +165,7 @@ function Feed() {
               variant="outlined"
               fullWidth
               value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}           
+              onChange={(e) => setNewComment(e.target.value)}
             />
             <Button
               variant="contained"
@@ -178,19 +178,27 @@ function Feed() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant='contained' onClick={()=>{
-            fetch("http://localhost:3010/feed/"+selectedFeed.Id,{
-              method:"DELETE"
-            })
-            .then(res=>res.json())
-            .then(data=>{
-              alert(data.message);
-              console.log(data);
-            })
-          }}
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              fetch("http://localhost:3010/feed/" + selectedFeed.ID, {
+                method: "DELETE"
+              })
+                .then(res => res.json())
+                .then(data => {
+                  alert(data.message);
+                  console.log(data);
 
+                  handleClose();
+                  handleGetFeed();
+                });
+            }}
+          >
+            삭제
           </Button>
         </DialogActions>
+
       </Dialog>
     </Container>
   );
