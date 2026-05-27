@@ -2,6 +2,25 @@ import React from 'react';
 import { Container, Typography, Box, Avatar, Grid, Paper } from '@mui/material';
 
 function MyPage() {
+  const[user,setUser]=useState({});
+
+  function handleGetUser(){
+    fetch("http://localhost:3010/feed/" + selectedFeed.ID, {
+                method: "DELETE"
+              })
+                .then(res => res.json())
+                .then(data => {
+                  alert(data.message);
+                  console.log(data);
+
+                  handleClose();
+                  handleGetFeed();
+                });
+            }}
+
+            useEffect(()=>{
+              
+            })
   return (
     <Container maxWidth="md">
       <Box

@@ -24,6 +24,7 @@ import {
   Avatar,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useNavigate } from 'react-router-dom';
 
 const mockFeeds = [
   {
@@ -42,6 +43,7 @@ const mockFeeds = [
 ];
 
 function Feed() {
+  const navigator=useNavigate();
   const [open, setOpen] = useState(false);
   const [selectedFeed, setSelectedFeed] = useState(null);
   const [comments, setComments] = useState([]);
@@ -84,7 +86,11 @@ function Feed() {
           console.log("data ==> ", data);
           setFeed(data.list);
         });
+        
+    }else{
+      alert("로그인후 이용해주세요")
     }
+
   }
 
   useEffect(() => {
