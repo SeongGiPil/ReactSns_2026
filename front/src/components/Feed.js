@@ -86,12 +86,6 @@ function Feed() {
 
     }
 
-
-    
-
-  
-
-
   }
   useEffect(() => {
     handleGetFeed();

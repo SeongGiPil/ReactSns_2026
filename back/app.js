@@ -21,6 +21,8 @@ app.set('views', path.join(__dirname, '.')); // .은 경로
 
 app.use("/sample", sampleRouter);
 app.use("/user", userRouter);
+app.use("/user", feedRouter);
+
 
 async function startServer() {
   try {
