@@ -34,10 +34,8 @@ function Menu() {
       }}
     >
 
-      {/* 상단 여백 */}
       <Toolbar />
 
-      {/* 메뉴 제목 */}
       <Typography
         variant="h6"
         component="div"
@@ -48,7 +46,6 @@ function Menu() {
 
       <List>
 
-        {/* 피드 */}
         <ListItem disablePadding>
           <ListItemButton component={Link} to="/feed">
             <ListItemIcon>
@@ -58,7 +55,6 @@ function Menu() {
           </ListItemButton>
         </ListItem>
 
-        {/* 등록 */}
         <ListItem disablePadding>
           <ListItemButton component={Link} to="/register">
             <ListItemIcon>
@@ -68,7 +64,6 @@ function Menu() {
           </ListItemButton>
         </ListItem>
 
-        {/* 마이페이지 */}
         <ListItem disablePadding>
           <ListItemButton component={Link} to="/mypage">
             <ListItemIcon>
@@ -78,13 +73,32 @@ function Menu() {
           </ListItemButton>
         </ListItem>
 
-        {/* context 예제 */}
         <ListItem disablePadding>
           <ListItemButton component={Link} to="/contextEx1">
             <ListItemIcon>
               <AccountCircle />
             </ListItemIcon>
             <ListItemText primary="Context 예제" />
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to="/contextEx2">
+            <ListItemIcon>
+              <AccountCircle />
+            </ListItemIcon>
+            <ListItemText primary="Context2 예제" />
+          </ListItemButton>
+        </ListItem>
+
+        
+
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to="/contextEx3">
+            <ListItemIcon>
+              <AccountCircle />
+            </ListItemIcon>
+            <ListItemText primary="Context 다크모드" />
           </ListItemButton>
         </ListItem>
 
