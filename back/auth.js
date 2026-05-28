@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = 'my_secret_key'; // .env 없이 하드코딩
+const JWT_SECRET = 'secret_key'; // .env 없이 하드코딩
 
 jwtAuthentication = (req, res, next) => {
     const authHeader = req.headers['authorization'];

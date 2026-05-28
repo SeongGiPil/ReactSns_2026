@@ -23,6 +23,8 @@ function App() {
           <Route path="/feed" element={<Feed />} />
           <Route path="/register" element={<Register />} />
           <Route path="/mypage" element={<MyPage />} />
+           <Route path="/context1" element={<ContextEx1 />} />
+          
         </Routes>
       </Box>
     </Box>

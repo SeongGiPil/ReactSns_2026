@@ -43,7 +43,7 @@ const mockFeeds = [
 ];
 
 function Feed() {
-  const navigator=useNavigate();
+  const navigator = useNavigate();
   const [open, setOpen] = useState(false);
   const [selectedFeed, setSelectedFeed] = useState(null);
   const [comments, setComments] = useState([]);
@@ -74,10 +74,10 @@ function Feed() {
     }
   };
 
-  function handleGetFeed() {
+  function handleGetFeed(){
     // 현재 로그인한 사용자의 피드목록 가져오기
     const token = localStorage.getItem("token");
-    if (token) {
+    if(token){
       const decoded = jwtDecode(token);
       console.log(decoded.userId);
       fetch("http://localhost:3010/feed/" + decoded.userId)
@@ -86,14 +86,13 @@ function Feed() {
           console.log("data ==> ", data);
           setFeed(data.list);
         });
-        
-    }else{
-      alert("로그인후 이용해주세요")
+    } else {
+      alert("로그인 후 이용해주세요.");
+      navigator("/");
     }
-
   }
 
-  useEffect(() => {
+  useEffect(()=>{
     handleGetFeed();
   }, [])
 
@@ -120,7 +119,7 @@ function Feed() {
                 />
                 <CardContent>
                   <Typography variant="body2" color="textSecondary">
-                    {feed.CONTENT}
+                    {feed.TITLE}
                   </Typography>
                 </CardContent>
               </Card>
@@ -171,7 +170,7 @@ function Feed() {
               variant="outlined"
               fullWidth
               value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
+              onChange={(e) => setNewComment(e.target.value)}           
             />
             <Button
               variant="contained"
@@ -184,27 +183,29 @@ function Feed() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              fetch("http://localhost:3010/feed/" + selectedFeed.ID, {
-                method: "DELETE"
+          <Button variant='contained' onClick={()=>{
+            fetch("http://localhost:3010/feed/"+selectedFeed.ID, {
+              method : "DELETE",
+              headers: {
+                  "Authorization": "Bearer " + localStorage.getItem("token")
+              }
+            })
+              .then(res => res.json())
+              .then(data => {
+                alert(data.message);
+                handleClose();
+                handleGetFeed();
               })
-                .then(res => res.json())
-                .then(data => {
-                  alert(data.message);
-                  console.log(data);
-
-                  handleClose();
-                  handleGetFeed();
-                });
-            }}
-          >
+              .catch(err => {
+                console.log("서버 에러!");
+              })
+          }} color="error">
             삭제
           </Button>
+          <Button onClick={handleClose} color="primary">
+            닫기
+          </Button>
         </DialogActions>
-
       </Dialog>
     </Container>
   );

@@ -1,124 +1,128 @@
 const express = require('express');
 const oracledb = require('oracledb');
-const db = require('../db');
-const Authentication
+const db = require("../db");
+const jwtAuthentication = require("../auth");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
-const JWT_KEY = 'secret_key';
+const JWT_KEY = "secret_key"; 
+// 해시 함수 실행 위해 사용할 키로 아주 긴 랜덤한 문자를 사용하길 권장하며, 노출되면 안됨.
+// .env로 관리해야 함
 const saltRounds = 10;
 
-// 로그인
-router.post('/login', async (req, res) => {
-  const { userId, pwd } = req.body;
-
+router.get('/:userId', jwtAuthentication, async (req, res) => {
+  const { userId } = req.params;
   let connection;
-
   try {
     connection = await db.getConnection();
-
     const result = await connection.execute(
       `
-        SELECT *
-        FROM TBL_USER
-        WHERE USERID = :userId
+        SELECT U.*, CNT
+        FROM TBL_USER U
+        LEFT JOIN (
+            SELECT COUNT(*) AS CNT, USERID
+            FROM TBL_FEED
+            GROUP BY USERID
+        ) T ON U.USERID = T.USERID
+        WHERE U.USERID = :userId
       `,
       [userId],
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      {outFormat: oracledb.OUT_FORMAT_OBJECT}
     );
+    
+    res.json({
+        result : "success",
+        info : result.rows[0]
+    });
+    
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  } finally {
+    await connection.close();
+  }
+});
 
+
+router.post('/login', async (req, res) => {
+  const { userId, pwd } = req.body;
+  let connection;
+  try {
+    connection = await db.getConnection();
+    const result = await connection.execute(
+      `
+        SELECT * FROM TBL_USER WHERE USERID = :userId
+      `,
+      [ userId ],
+      {outFormat: oracledb.OUT_FORMAT_OBJECT}
+    );
     let isLogin = false;
-    let message = '로그인 실패!';
-    let token=null;
-
-    if (result.rows.length > 0) {
-      const user = result.rows[0];
-
-      // 입력한 비밀번호와 DB에 저장된 암호화 비밀번호 비교
-      const match = await bcrypt.compare(pwd, user.PWD);
-
-      if (match) {
+    let message = "로그인 실패!";
+    let token = null;
+    if(result.rows.length > 0){
+      let match = await bcrypt.compare(pwd, result.rows[0].PWD);
+      if(match){
         isLogin = true;
-        message = '로그인 성공!';
-
-        // 토큰에 넣을 사용자 정보
-        const payload = {
-          userId: user.USERID,
-          userName: user.USERNAME,
-          role: user.ROLE
+        message = "로그인 성공!";
+        let payload = {
+          userId : result.rows[0].USERID,
+          userName : result.rows[0].USERNAME,
+          role : result.rows[0].ROLE
         };
 
-        // JWT 토큰 생성
-         token = jwt.sign(payload, JWT_KEY, { expiresIn: '1h' });
+        token = jwt.sign(payload, JWT_KEY, {expiresIn : '1h'});
         console.log(token);
-        return res.json({
-          result: isLogin,
-          message: message,
-          token: token,
-          user: payload
-        });
       }
     }
 
     res.json({
-      result: isLogin,
-      message: message
+        result : isLogin,
+        message : message,
+        token : token
+        // list : result.rows
     });
-
+    
   } catch (error) {
     console.error('Error executing query', error);
     res.status(500).send('Error executing query');
   } finally {
-    if (connection) {
-      await connection.close();
-    }
+    await connection.close();
   }
 });
 
-// 회원가입
 router.post('/join', async (req, res) => {
   const { userId, pwd, userName } = req.body;
-
+  const hashPwd = await bcrypt.hash(pwd, saltRounds);
   let connection;
-
   try {
-    // 비밀번호 암호화
-    const hashPwd = await bcrypt.hash(pwd, saltRounds);
-
     connection = await db.getConnection();
-
     const result = await connection.execute(
       `
-        INSERT INTO TBL_USER(USERID, PWD, USERNAME)
-        VALUES(:userId, :hashPwd, :userName)
+        INSERT INTO TBL_USER(USERID, PWD, USERNAME) VALUES(:userId, :hashPwd, :userName)
       `,
-      [userId, hashPwd, userName],
-      { autoCommit: true }
+      [ userId, hashPwd, userName ],
+      { autoCommit : true }
     );
-
-    let isJoin = false;
-    let message = '회원가입 실패!';
-
-    if (result.rowsAffected > 0) {
-      isJoin = true;
-      message = '회원가입 성공!';
+    let isLogin = false;
+    let message = "회원가입 실패!";
+    if(result.rowsAffected > 0){
+      isLogin = true;
+      message = "회원가입 성공!";
     }
 
     res.json({
-      result: isJoin,
-      message: message
-    
+        result : isLogin,
+        message : message
+        // list : result.rows
     });
-
+    
   } catch (error) {
     console.error('Error executing query', error);
     res.status(500).send('Error executing query');
   } finally {
-    if (connection) {
-      await connection.close();
-    }
+    await connection.close();
   }
 });
 
