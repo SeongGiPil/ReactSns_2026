@@ -72,6 +72,7 @@ router.post('/', jwtAuthentication, async (req, res) => {
       {userId,title,content},
       {autocommit:true}
     );
+    console.log(result.outbinds.insertId(0));
     console.log()
     
     res.json({
