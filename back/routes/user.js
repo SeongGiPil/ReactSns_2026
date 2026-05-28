@@ -73,6 +73,7 @@ router.post('/login', async (req, res) => {
         };
 
         token = jwt.sign(payload, JWT_KEY, {expiresIn : '1h'});
+        console.log(JWT_KEY);
         console.log(token);
       }
     }

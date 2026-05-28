@@ -12,7 +12,7 @@ function Header(props) {
                 padding: "50px 50px",
 
                 // 다크모드 여부에 따라 배경색 변경
-                backgroundColor: props.darkMode ? "#222" : "#ccc",
+                backgroundColor: props.darkMode ? "#787171" : "#ccc",
 
                 // 글자색 변경
                 color: props.darkMode ? "white" : "black",
@@ -46,7 +46,7 @@ function Body(props) {
                 padding: "50px 50px",
 
                 // 다크모드 여부에 따라 배경색 변경
-                backgroundColor: props.darkMode ? "#111" : "#7c1889",
+                backgroundColor: props.darkMode ? "#111" : "#a04bac",
 
                 // 글자색 변경
                 color: props.darkMode ? "white" : "black",

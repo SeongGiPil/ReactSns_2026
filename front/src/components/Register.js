@@ -16,6 +16,8 @@ import { PhotoCamera } from '@mui/icons-material';
 
 function Register() {
   const [file, setFile] = React.useState(null);
+  let titleRef=useRef("");
+  let contentREf=useRef("");
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -86,5 +88,10 @@ function Register() {
     </Container>
   );
 }
+
+
+  if(token){
+    const decoded
+  }
 
 export default Register;
