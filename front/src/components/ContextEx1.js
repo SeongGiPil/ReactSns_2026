@@ -1,9 +1,10 @@
+import { useScrollTrigger } from "@mui/material"
 import { useState } from "react"
 
-function content1(){
+function content1(props){
     return<>
-        <h5>content1!!!</h5>
-        <div>이름,나이출력</div>
+        <h5>Content1!!!</h5>
+        <div>{props.name}{props.age}</div>
     </>
 }
 
@@ -28,7 +29,7 @@ function ContextEx1(){
     let[age,setAge]=useState(30);
     
     return<>
-        <Body></Body>
+        <Body name={name}></Body>
     
     </>
 }
